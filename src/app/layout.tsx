@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "EAB Plumbing & Heating | Gas Safe Engineer — Norfolk, Suffolk, Essex & London",
   description: "Gas Safe registered plumber and heating engineer covering Norfolk, Suffolk, Essex and London. Boiler services, CP12 gas safety certificates, emergency callouts and plumbing repairs. Fast response, honest pricing.",
   keywords: "gas engineer Norfolk, gas safe engineer Norfolk, boiler service Norwich, CP12 gas safety certificate, emergency plumber Norfolk, plumber Suffolk, heating engineer Essex, boiler repair Norwich, gas safety certificate landlord",
+  metadataBase: new URL("https://eabplumbing.co.uk"),
   openGraph: {
     title: "EAB Plumbing & Heating | Gas Safe Engineer",
     description: "Gas Safe registered engineer covering Norfolk, Suffolk, Essex & London. Boiler services, CP12s, emergency callouts.",
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
     siteName: "EAB Plumbing & Heating",
     type: "website",
     locale: "en_GB",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "EAB Plumbing & Heating — Gas Safe Engineers" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "EAB Plumbing & Heating | Gas Safe Engineer",
     description: "Gas Safe registered engineer covering Norfolk, Suffolk, Essex & London.",
+    images: ["/og-image.jpg"],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://eabplumbing.co.uk" },
