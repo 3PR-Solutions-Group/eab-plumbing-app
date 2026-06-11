@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
-import { Plus, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
 import InfoModal from "@/components/InfoModal";
+import { supabase } from "@/lib/supabase";
 
 const JOBS_INFO = [
   { heading: "📅 What are Jobs?", text: "Jobs is your diary. Every time you book in a piece of work — a boiler service, an emergency callout, a plumbing repair — log it here so you always know what's coming up." },
@@ -13,15 +14,51 @@ const JOBS_INFO = [
 
 const JOB_TYPES = ["Boiler Service", "CP12 Gas Safety Cert", "Emergency Callout", "Boiler Repair", "Plumbing Repair", "Bathroom Fit", "Radiator Install", "Other"];
 
+type Job = { id: string; customerName: string; title: string; jobType: string; date: string; time: string; status: string; notes: string };
+
+function parseJob(row: any): Job {
+  let customerName = "", time = "", userNotes = "";
+  try { const p = JSON.parse(row.notes || "{}"); customerName = p.customerName || ""; time = p.time || ""; userNotes = p.userNotes || ""; } catch { userNotes = row.notes || ""; }
+  return {
+    id: row.id,
+    customerName: customerName || row.address || "—",
+    title: row.title || "",
+    jobType: row.description || "",
+    date: row.scheduled_date || "",
+    time,
+    status: row.status || "pending",
+    notes: userNotes,
+  };
+}
+
 export default function JobsPage() {
-  const [jobs, setJobs] = useState([
-    { id: "1", customerName: "John Smith", title: "Annual Boiler Service", jobType: "Boiler Service", date: new Date().toISOString().split("T")[0], time: "09:00", status: "scheduled", notes: "" },
-  ]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showing, setShowing] = useState(false);
   const [form, setForm] = useState({ customerName: "", title: "", jobType: "", date: "", time: "", notes: "", status: "scheduled" });
 
-  const submit = () => { setJobs(js => [...js, { ...form, id: Date.now().toString() }]); setForm({ customerName: "", title: "", jobType: "", date: "", time: "", notes: "", status: "scheduled" }); setShowing(false); };
+  useEffect(() => {
+    supabase.from("jobs").select("*").order("created_at", { ascending: false })
+      .then(({ data }) => { if (data) setJobs(data.map(parseJob)); setLoading(false); });
+  }, []);
+
+  const submit = async () => {
+    const { data, error } = await supabase.from("jobs").insert({
+      title: form.title || form.jobType,
+      description: form.jobType,
+      status: form.status === "scheduled" ? "pending" : form.status,
+      scheduled_date: form.date || null,
+      address: form.customerName,
+      notes: JSON.stringify({ customerName: form.customerName, time: form.time, userNotes: form.notes }),
+    }).select().single();
+
+    if (data && !error) setJobs(js => [parseJob(data), ...js]);
+    setForm({ customerName: "", title: "", jobType: "", date: "", time: "", notes: "", status: "scheduled" });
+    setShowing(false);
+  };
+
   const statusColor = (s: string) => s === "completed" ? "bg-green-100 text-green-700" : s === "in-progress" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700";
+  const displayStatus = (s: string) => s === "pending" ? "scheduled" : s;
 
   if (showing) return (
     <div className="max-w-lg mx-auto">
@@ -62,21 +99,26 @@ export default function JobsPage() {
           </button>
         </div>
       </div>
-      <div className="space-y-2">
-        {jobs.map(job => (
-          <div key={job.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-4">
-            <div className="text-center min-w-10 bg-blue-50 rounded-lg py-1.5 px-1">
-              <div className="text-base font-bold text-blue-700 leading-none">{job.date.split("-")[2]}</div>
-              <div className="text-xs text-blue-400">{new Date(job.date + "T12:00:00").toLocaleString("en-GB", { month: "short" })}</div>
+      {loading ? <div className="text-center text-gray-400 py-8">Loading…</div> : (
+        <div className="space-y-2">
+          {jobs.map(job => (
+            <div key={job.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-4">
+              {job.date && (
+                <div className="text-center min-w-10 bg-blue-50 rounded-lg py-1.5 px-1">
+                  <div className="text-base font-bold text-blue-700 leading-none">{job.date.split("-")[2]}</div>
+                  <div className="text-xs text-blue-400">{new Date(job.date + "T12:00:00").toLocaleString("en-GB", { month: "short" })}</div>
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-sm text-gray-900 truncate">{job.title || job.jobType}</div>
+                <div className="text-xs text-gray-400">{job.customerName}{job.time ? ` · ${job.time}` : ""}</div>
+              </div>
+              <span className={`text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ${statusColor(job.status)}`}>{displayStatus(job.status)}</span>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-sm text-gray-900 truncate">{job.title || job.jobType}</div>
-              <div className="text-xs text-gray-400">{job.customerName} · {job.time}</div>
-            </div>
-            <span className={`text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ${statusColor(job.status)}`}>{job.status}</span>
-          </div>
-        ))}
-      </div>
+          ))}
+          {jobs.length === 0 && <div className="text-center text-gray-400 py-8">No jobs yet</div>}
+        </div>
+      )}
     </div>
   );
 }
