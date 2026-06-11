@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     locale: "en_GB",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     images: ["https://eabplumbing.co.uk/og-image.png"],
     title: "EAB Plumbing & Heating | Gas Safe Engineer",
     description: "Gas Safe registered engineer covering Norfolk, Suffolk, Essex & London.",
