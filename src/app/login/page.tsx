@@ -8,7 +8,7 @@ function LoginForm() {
   const [error, setError] = useState(false);
   const router = useRouter();
   const params = useSearchParams();
-  const redirect = params.get("redirect") || "/invoices";
+  const redirect = params.get("redirect") || "/admin";
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
