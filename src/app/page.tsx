@@ -135,7 +135,7 @@ export default function LandingPage() {
         </div>
         <p className="text-xs">Gas Safe Registered · Norfolk · Suffolk · Essex · London</p>
         <div className="mt-4 pt-4 border-t border-gray-800">
-          <Link href="/login" className="text-xs text-gray-600 hover:text-gray-400">Admin Login</Link>
+          <Link href="/admin" className="text-xs text-gray-600 hover:text-gray-400">Admin Login</Link>
         </div>
       </footer>
 

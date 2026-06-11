@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   if (!isAdmin) return NextResponse.next();
   const auth = request.cookies.get(COOKIE)?.value;
   if (auth === PASSWORD) return NextResponse.next();
-  const loginUrl = new URL("/login", request.url);
+  const loginUrl = new URL("/admin", request.url);
   loginUrl.searchParams.set("redirect", pathname);
   return NextResponse.redirect(loginUrl);
 }
