@@ -1,5 +1,6 @@
 import { store } from "@/lib/store";
-import { FileText, Calendar, Users, PoundSterling, AlertCircle, CheckCircle2 } from "lucide-react";
+import { FileText, Calendar, Users, AlertCircle, PoundSterling } from "lucide-react";
+import Link from "next/link";
 
 export default function Dashboard() {
   const invoices = store.getInvoices();
@@ -7,76 +8,62 @@ export default function Dashboard() {
   const customers = store.getCustomers();
   const outstanding = invoices.filter(i => i.status === "outstanding").reduce((s, i) => s + i.total, 0);
   const paid = invoices.filter(i => i.status === "paid").reduce((s, i) => s + i.total, 0);
-  const todayJobs = jobs.filter(j => j.date === new Date().toISOString().split("T")[0]);
-
-  const stats = [
-    { label: "Outstanding", value: `£${outstanding.toFixed(2)}`, icon: AlertCircle, color: "text-amber-600 bg-amber-50" },
-    { label: "Paid This Month", value: `£${paid.toFixed(2)}`, icon: PoundSterling, color: "text-green-600 bg-green-50" },
-    { label: "Total Customers", value: customers.length, icon: Users, color: "text-blue-600 bg-blue-50" },
-    { label: "Jobs Today", value: todayJobs.length, icon: Calendar, color: "text-purple-600 bg-purple-50" },
-  ];
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map(({ label, value, icon: Icon, color }) => (
+    <div className="max-w-lg mx-auto">
+      <h1 className="text-xl font-bold text-gray-900 mb-4">Dashboard</h1>
+
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {[
+          { label: "Outstanding", value: `£${outstanding.toFixed(2)}`, icon: AlertCircle, color: "text-amber-600 bg-amber-50" },
+          { label: "Paid", value: `£${paid.toFixed(2)}`, icon: PoundSterling, color: "text-green-600 bg-green-50" },
+          { label: "Customers", value: customers.length, icon: Users, color: "text-blue-600 bg-blue-50" },
+          { label: "Jobs", value: jobs.length, icon: Calendar, color: "text-purple-600 bg-purple-50" },
+        ].map(({ label, value, icon: Icon, color }) => (
           <div key={label} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${color}`}>
-              <Icon className="w-5 h-5" />
-            </div>
-            <div className="text-2xl font-bold text-gray-900">{value}</div>
-            <div className="text-sm text-gray-500 mt-1">{label}</div>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${color}`}><Icon className="w-4 h-4" /></div>
+            <div className="text-xl font-bold text-gray-900">{value}</div>
+            <div className="text-xs text-gray-500 mt-0.5">{label}</div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-4 border-b border-gray-100 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-blue-600" />
-            <h2 className="font-semibold text-gray-900">Recent Invoices</h2>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {invoices.slice(0, 5).map(inv => (
-              <div key={inv.id} className="p-4 flex items-center justify-between">
-                <div>
-                  <div className="font-medium text-gray-900 text-sm">{inv.number}</div>
-                  <div className="text-xs text-gray-500">{inv.customerName}</div>
-                </div>
-                <div className="text-right">
-                  <div className="font-semibold text-gray-900">£{inv.total.toFixed(2)}</div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${inv.status === "paid" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
-                    {inv.status}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {[
+          { href: "/invoices", label: "New Invoice", icon: FileText, color: "bg-blue-700 text-white" },
+          { href: "/quotes", label: "New Quote", icon: ClipboardList, color: "bg-blue-100 text-blue-700" },
+          { href: "/jobs", label: "Add Job", icon: Calendar, color: "bg-blue-100 text-blue-700" },
+          { href: "/customers", label: "Add Customer", icon: Users, color: "bg-blue-100 text-blue-700" },
+        ].map(({ href, label, icon: Icon, color }) => (
+          <Link key={href} href={href} className={`flex items-center gap-2 justify-center rounded-xl py-3 text-sm font-semibold ${color}`}>
+            <Icon className="w-4 h-4" />{label}
+          </Link>
+        ))}
+      </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-4 border-b border-gray-100 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-blue-600" />
-            <h2 className="font-semibold text-gray-900">Upcoming Jobs</h2>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {jobs.slice(0, 5).map(job => (
-              <div key={job.id} className="p-4 flex items-center justify-between">
-                <div>
-                  <div className="font-medium text-gray-900 text-sm">{job.title}</div>
-                  <div className="text-xs text-gray-500">{job.customerName}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-medium text-gray-700">{job.time}</div>
-                  <div className="text-xs text-gray-500">{job.date}</div>
-                </div>
-              </div>
-            ))}
-            {jobs.length === 0 && <div className="p-4 text-sm text-gray-400 text-center">No upcoming jobs</div>}
-          </div>
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm mb-4">
+        <div className="px-4 py-3 border-b border-gray-50 flex items-center gap-2">
+          <FileText className="w-4 h-4 text-blue-600" />
+          <span className="font-semibold text-sm text-gray-900">Recent Invoices</span>
         </div>
+        {invoices.slice(0, 4).map(inv => (
+          <div key={inv.id} className="px-4 py-3 flex items-center justify-between border-b border-gray-50 last:border-0">
+            <div>
+              <div className="font-medium text-sm text-gray-900">{inv.number}</div>
+              <div className="text-xs text-gray-400">{inv.customerName}</div>
+            </div>
+            <div className="text-right">
+              <div className="font-semibold text-sm">£{inv.total.toFixed(2)}</div>
+              <span className={`text-xs px-2 py-0.5 rounded-full ${inv.status === "paid" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>{inv.status}</span>
+            </div>
+          </div>
+        ))}
+        {invoices.length === 0 && <div className="p-4 text-sm text-gray-400 text-center">No invoices yet</div>}
       </div>
     </div>
   );
+}
+
+function ClipboardList({ className }: { className?: string }) {
+  return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>;
 }
