@@ -1,6 +1,15 @@
 "use client";
 import { useState } from "react";
 import { Plus, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import InfoModal from "@/components/InfoModal";
+
+const JOBS_INFO = [
+  { heading: "📅 What are Jobs?", text: "Jobs is your diary. Every time you book in a piece of work — a boiler service, an emergency callout, a plumbing repair — log it here so you always know what's coming up." },
+  { heading: "➕ Adding a Job", text: "Tap 'New', fill in the customer name, job type, date and time. That's it. You can add notes too if there's anything useful to remember about the job." },
+  { heading: "🔄 Updating Status", text: "Jobs start as 'Scheduled'. When you're on the way, change it to 'In Progress'. When done, mark it 'Completed'. This keeps your diary accurate." },
+  { heading: "📆 Job Types", text: "Pick from common job types — Boiler Service, CP12, Emergency Callout, Plumbing Repair, and more. This helps you see what work you're doing most." },
+  { heading: "💡 Tip", text: "After completing a job, head to Invoices and create the invoice while it's fresh — you'll remember exactly what was done and what parts you used." },
+];
 
 const JOB_TYPES = ["Boiler Service", "CP12 Gas Safety Cert", "Emergency Callout", "Boiler Repair", "Plumbing Repair", "Bathroom Fit", "Radiator Install", "Other"];
 
@@ -36,9 +45,9 @@ export default function JobsPage() {
           <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
         </select>
-        <textarea className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" rows={3} placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
+        <textarea className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" rows={3} placeholder="Notes (optional)" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
       </div>
-      <button onClick={submit} className="w-full bg-blue-700 text-white py-4 rounded-xl font-semibold text-sm">Save Job</button>
+      <button onClick={submit} className="w-full bg-blue-700 text-white py-4 rounded-xl font-semibold text-sm active:scale-95 transition-transform">Save Job</button>
     </div>
   );
 
@@ -46,14 +55,17 @@ export default function JobsPage() {
     <div className="max-w-lg mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold text-gray-900">Jobs</h1>
-        <button onClick={() => setShowing(true)} className="flex items-center gap-1.5 bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
-          <Plus className="w-4 h-4" /> New
-        </button>
+        <div className="flex items-center gap-2">
+          <InfoModal title="How to use Jobs" content={JOBS_INFO} />
+          <button onClick={() => setShowing(true)} className="flex items-center gap-1.5 bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
+            <Plus className="w-4 h-4" /> New
+          </button>
+        </div>
       </div>
       <div className="space-y-2">
         {jobs.map(job => (
           <div key={job.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-4">
-            <div className="text-center min-w-10 bg-blue-50 rounded-lg py-1.5">
+            <div className="text-center min-w-10 bg-blue-50 rounded-lg py-1.5 px-1">
               <div className="text-base font-bold text-blue-700 leading-none">{job.date.split("-")[2]}</div>
               <div className="text-xs text-blue-400">{new Date(job.date + "T12:00:00").toLocaleString("en-GB", { month: "short" })}</div>
             </div>

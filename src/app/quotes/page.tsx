@@ -1,6 +1,15 @@
 "use client";
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import InfoModal from "@/components/InfoModal";
+
+const QUOTE_INFO = [
+  { heading: "📋 What is a Quote?", text: "A quote tells a customer what a job will cost before you do it. Once they agree, you can convert it into an invoice with one tap." },
+  { heading: "🔥 Templates", text: "You have 4 pre-built templates for your most common jobs — Boiler Service, CP12, Emergency Callout, and General Plumbing. Tap one to start a quote instantly." },
+  { heading: "✏️ Editing Prices", text: "All prices in the template are editable. If a job costs more than the base rate, just change the price before saving." },
+  { heading: "📤 Sending Quotes", text: "Once email is wired up, you'll be able to send quotes directly to customers. For now, save the quote and call the customer with the price." },
+  { heading: "💡 Tip", text: "Always do a quote before starting a job — it protects you if a customer disputes the price later." },
+];
 
 const TEMPLATES = [
   { name: "Boiler Service", emoji: "🔥", items: [{ description: "Annual Boiler Service & Safety Check", quantity: 1, unitPrice: 85 }] },
@@ -44,18 +53,21 @@ export default function QuotesPage() {
         <span className="font-semibold text-gray-700">Total</span>
         <span className="font-bold text-lg text-blue-700">£{total.toFixed(2)}</span>
       </div>
-      <button onClick={submit} className="w-full bg-blue-700 text-white py-4 rounded-xl font-semibold text-sm">Save Quote</button>
+      <button onClick={submit} className="w-full bg-blue-700 text-white py-4 rounded-xl font-semibold text-sm active:scale-95 transition-transform">Save Quote</button>
     </div>
   );
 
   return (
     <div className="max-w-lg mx-auto">
-      <h1 className="text-xl font-bold text-gray-900 mb-4">Quotes</h1>
-      <p className="text-sm text-gray-500 mb-4">Pick a template to get started</p>
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="text-xl font-bold text-gray-900">Quotes</h1>
+        <InfoModal title="How to use Quotes" content={QUOTE_INFO} />
+      </div>
+      <p className="text-sm text-gray-500 mb-4">Tap a template to get started</p>
       <div className="grid grid-cols-2 gap-3 mb-6">
         {TEMPLATES.map(t => (
           <button key={t.name} onClick={() => { setForm({ customerName: "", template: t.name, items: t.items.map((i: any) => ({ ...i })) }); setShowing(true); }}
-            className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-blue-400 hover:shadow-sm transition-all active:scale-95">
+            className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-blue-400 active:scale-95 transition-all">
             <div className="text-2xl mb-1">{t.emoji}</div>
             <div className="font-medium text-gray-900 text-sm">{t.name}</div>
             <div className="text-xs text-blue-600 mt-0.5">from £{t.items.reduce((s: number, i: any) => s + i.quantity * i.unitPrice, 0)}</div>

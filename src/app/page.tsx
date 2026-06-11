@@ -1,6 +1,15 @@
 import { store } from "@/lib/store";
 import { FileText, Calendar, Users, AlertCircle, PoundSterling } from "lucide-react";
 import Link from "next/link";
+import InfoModal from "@/components/InfoModal";
+
+const DASHBOARD_INFO = [
+  { heading: "📊 Your Dashboard", text: "This is your home screen. It shows a quick summary of your business at a glance — what's owed to you, what you've been paid, your customers, and your booked jobs." },
+  { heading: "💰 Outstanding", text: "The total amount on invoices you've sent that haven't been paid yet. Tap Invoices to chase them up or mark them as paid." },
+  { heading: "✅ Paid", text: "Total money received this month. When you mark an invoice as paid, it moves here." },
+  { heading: "Quick Actions", text: "The four buttons below the stats are shortcuts. Tap them to jump straight to creating a new invoice, quote, job, or customer." },
+  { heading: "💡 Tip", text: "Save this page to your home screen for quick access — tap Share in your browser then 'Add to Home Screen'." },
+];
 
 export default function Dashboard() {
   const invoices = store.getInvoices();
@@ -11,7 +20,10 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <h1 className="text-xl font-bold text-gray-900 mb-4">Dashboard</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+        <InfoModal title="How to use Dashboard" content={DASHBOARD_INFO} />
+      </div>
 
       <div className="grid grid-cols-2 gap-3 mb-6">
         {[
@@ -35,7 +47,7 @@ export default function Dashboard() {
           { href: "/jobs", label: "Add Job", icon: Calendar, color: "bg-blue-100 text-blue-700" },
           { href: "/customers", label: "Add Customer", icon: Users, color: "bg-blue-100 text-blue-700" },
         ].map(({ href, label, icon: Icon, color }) => (
-          <Link key={href} href={href} className={`flex items-center gap-2 justify-center rounded-xl py-3 text-sm font-semibold ${color}`}>
+          <Link key={href} href={href} className={`flex items-center gap-2 justify-center rounded-xl py-3 text-sm font-semibold ${color} active:scale-95 transition-transform`}>
             <Icon className="w-4 h-4" />{label}
           </Link>
         ))}

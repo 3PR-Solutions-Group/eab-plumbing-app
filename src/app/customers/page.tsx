@@ -1,6 +1,15 @@
 "use client";
 import { useState } from "react";
 import { Plus, Phone, Mail, MapPin } from "lucide-react";
+import InfoModal from "@/components/InfoModal";
+
+const CUSTOMERS_INFO = [
+  { heading: "👥 What is Customers?", text: "Your customer list. Every person you do work for should be in here. It keeps track of all their jobs and invoices in one place." },
+  { heading: "➕ Adding a Customer", text: "Tap 'New' and fill in their details. Name and phone is the minimum — email is useful so you can send them invoices later." },
+  { heading: "📞 Quick Call & Email", text: "Tap the phone number on a customer card to call them directly, or tap the email to open your mail app. No need to copy and paste." },
+  { heading: "📊 Jobs & Invoices", text: "Each customer card shows how many jobs you've done for them and how many invoices you've raised. Over time this builds up a history." },
+  { heading: "💡 Tip", text: "Add customers before you create their invoices and jobs — then you can link everything together properly as the app grows." },
+];
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState([
@@ -19,11 +28,11 @@ export default function CustomersPage() {
       </div>
       <div className="space-y-3 mb-5">
         <input className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" placeholder="Full name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
-        <input className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" placeholder="Email" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
-        <input className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" placeholder="Phone" type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
-        <input className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" placeholder="Address" value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} />
+        <input className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" placeholder="Phone number" type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+        <input className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" placeholder="Email (optional)" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+        <input className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white" placeholder="Address (optional)" value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} />
       </div>
-      <button onClick={submit} className="w-full bg-blue-700 text-white py-4 rounded-xl font-semibold text-sm">Save Customer</button>
+      <button onClick={submit} className="w-full bg-blue-700 text-white py-4 rounded-xl font-semibold text-sm active:scale-95 transition-transform">Save Customer</button>
     </div>
   );
 
@@ -31,15 +40,18 @@ export default function CustomersPage() {
     <div className="max-w-lg mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold text-gray-900">Customers</h1>
-        <button onClick={() => setShowing(true)} className="flex items-center gap-1.5 bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
-          <Plus className="w-4 h-4" /> New
-        </button>
+        <div className="flex items-center gap-2">
+          <InfoModal title="How to use Customers" content={CUSTOMERS_INFO} />
+          <button onClick={() => setShowing(true)} className="flex items-center gap-1.5 bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold">
+            <Plus className="w-4 h-4" /> New
+          </button>
+        </div>
       </div>
       <div className="space-y-3">
         {customers.map(c => (
           <div key={c.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
             <div className="font-semibold text-gray-900 mb-2">{c.name}</div>
-            <div className="space-y-1 mb-3">
+            <div className="space-y-1.5 mb-3">
               {c.phone && <a href={`tel:${c.phone}`} className="flex items-center gap-2 text-sm text-blue-600"><Phone className="w-3.5 h-3.5" />{c.phone}</a>}
               {c.email && <a href={`mailto:${c.email}`} className="flex items-center gap-2 text-sm text-blue-600"><Mail className="w-3.5 h-3.5" />{c.email}</a>}
               {c.address && <div className="flex items-center gap-2 text-sm text-gray-500"><MapPin className="w-3.5 h-3.5" />{c.address}</div>}
