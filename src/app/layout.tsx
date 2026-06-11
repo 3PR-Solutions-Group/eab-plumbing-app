@@ -19,10 +19,12 @@ export const metadata: Metadata = {
     url: "https://eabplumbing.co.uk",
     siteName: "EAB Plumbing & Heating",
     type: "website",
+    images: [{ url: "https://eabplumbing.co.uk/og-image.jpg", width: 1200, height: 630, alt: "EAB Plumbing & Heating" }],
     locale: "en_GB",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
+    images: ["https://eabplumbing.co.uk/og-image.jpg"],
     title: "EAB Plumbing & Heating | Gas Safe Engineer",
     description: "Gas Safe registered engineer covering Norfolk, Suffolk, Essex & London.",
   },
