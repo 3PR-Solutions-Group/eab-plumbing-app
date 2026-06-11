@@ -5,7 +5,14 @@ export const metadata: Metadata = {
   title: "EAB Plumbing & Heating | Gas Safe Engineer — Norfolk, Suffolk, Essex & London",
   description: "Gas Safe registered plumber and heating engineer covering Norfolk, Suffolk, Essex and London. Boiler services, CP12 gas safety certificates, emergency callouts and plumbing repairs. Fast response, honest pricing.",
   keywords: "gas engineer Norfolk, gas safe engineer Norfolk, boiler service Norwich, CP12 gas safety certificate, emergency plumber Norfolk, plumber Suffolk, heating engineer Essex, boiler repair Norwich, gas safety certificate landlord",
-  metadataBase: new URL("https://eabplumbing.co.uk"),
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.svg", type: "image/svg+xml" },
+    ],
+  },
   openGraph: {
     title: "EAB Plumbing & Heating | Gas Safe Engineer",
     description: "Gas Safe registered engineer covering Norfolk, Suffolk, Essex & London. Boiler services, CP12s, emergency callouts.",
@@ -13,13 +20,11 @@ export const metadata: Metadata = {
     siteName: "EAB Plumbing & Heating",
     type: "website",
     locale: "en_GB",
-    images: [{ url: "/og-icon.jpg?v=1781208286", width: 400, height: 400, alt: "EAB Plumbing & Heating" }],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "EAB Plumbing & Heating | Gas Safe Engineer",
     description: "Gas Safe registered engineer covering Norfolk, Suffolk, Essex & London.",
-    images: ["/og-icon.jpg?v=1781208286"],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "https://eabplumbing.co.uk" },
@@ -29,6 +34,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-GB">
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -47,13 +54,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "name": "Gas Safe Registered",
               "credentialCategory": "Professional Certification"
             },
-            "sameAs": [`https://wa.me/447344624714`],
+            "sameAs": ["https://wa.me/447344624714"],
             "priceRange": "££",
             "openingHoursSpecification": [
               { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "08:00", "closes": "19:00" },
               { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday"], "opens": "08:00", "closes": "17:00" }
-            ],
-            "availableLanguage": "English"
+            ]
           })}}
         />
       </head>
